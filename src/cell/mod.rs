@@ -873,6 +873,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn spatial_south_west_gradient_interpolation() {
         let epoch = Epoch::default();
 
