@@ -305,7 +305,16 @@ impl MapCell {
     /// Returns true if following [Geometry], expressed in decimal degrees,
     /// is contained within this [MapCell].
     pub fn contains(&self, geometry: &Geometry<f64>) -> bool {
-        self.bounding_rect_degrees().contains(geometry)
+        let rect = self.bounding_rect_degrees();
+        match geometry {
+            // the cell is closed: its corners and edges belong to it
+            // (geo::Rect only contains its interior)
+            Geometry::Point(point) => {
+                let (min, max) = (rect.min(), rect.max());
+                point.x() >= min.x && point.x() <= max.x && point.y() >= min.y && point.y() <= max.y
+            },
+            geometry => rect.contains(geometry),
+        }
     }
 
     /// Copies and updates the Northeastern TEC component
